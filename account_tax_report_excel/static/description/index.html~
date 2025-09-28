@@ -1,0 +1,61 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Account Tax Report Odoo 9 - In Excel</h2>
+        <p class="oe_mt32">
+This module allows user to print tax report (Module: account_tax_report) in excel format in Odoo version 9.0 Community edition</p><br/>
+You can download: https://www.odoo.com/apps/modules/9.0/account_tax_report/
+<p><br/><br/>
+    </div>
+</section>
+
+<section class="oe_container oe_dark" >
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Account Tax Report - Excel</h2>
+        <h3 class="oe_slogan">Menu: Accounting/Reporting/PDF Reports/Tax Report</h3>
+        <div class="oe_span12">
+            <div class="oe_demo oe_picture oe_screenshot">
+                <img src="report_wizard.png">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <h2 class="oe_slogan">Tax Report Detailed View - Excel</h2><br/><br/>
+        <div class="oe_span6">
+            <h4>Tax Report (Display Details) in Excel Format<h4>
+            <div class="oe_demo oe_screenshot">
+                <img src="excel_report_crop.png">
+            </div>
+        </div>
+        <div class="oe_span6">
+            <h4>Tax Report (Without Display Details) in Excel Format<h4>
+            <div class="oe_demo oe_screenshot">
+                <img src="excel_report_without_detail_Crop.png">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container" >
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Contact / Support</h2>
+        <div class="oe_span6">
+            <div class="oe_picture" style="margin: 25px 10%;">
+                <a href="http://www.probuse.com/">
+                    <img src="logo.png">
+                </a>
+            </div>
+        </div>
+        <div class="oe_span6">
+            <p class="oe_mt32">
+                If you need any help or want more additional features,<br/> you may contact us through:<br/>
+                Email: <a href="mailto:contact@probuse.com">contact@probuse.com</a> <br/>
+                Website: <a href="http://www.probuse.com/"><u>www.probuse.com</u></a> <br/>
+                Skype: mustufa_probuse<br/>
+            </p>
+        </div>
+    </div>
+</section>
+ 

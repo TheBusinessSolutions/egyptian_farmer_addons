@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <openerp> -->
+<odoo>
+    <data>
+        <!-- <report 
+            id="action_report_tax_reg"
+            model="taxes.report"
+            string="Tax report"
+            report_type="qweb-pdf"
+            name="account_tax_report.report_tax_view"
+            file="account_tax_report.report_tax_view" 
+            menu="False" 
+            /> -->
+
+        <record id="action_report_tax_reg" model="ir.actions.report">
+            <field name="name">Tax Report</field>
+            <field name="model">taxes.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account_tax_report.report_tax_view</field>
+            <field name="report_file">account_tax_report.report_tax_view</field>
+            <field name="binding_model_id" ref="model_taxes_report"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>
+<!-- </openerp> -->

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account_tax_report_view" model="ir.ui.view">
+        <field name="name">tax.report.form</field>
+        <field name="model">tax.report.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Tax Reports">
+            <field name="company_id" invisible="1"/>
+            <group string="Account Tax Report">
+                <group>
+                    <field name="tax_report_id" domain="[('parent_id','=',False)]"/> 
+                    <field name="display_detail" />
+                </group>
+                <group>
+                    <field name="target_move" widget="radio"/>
+                </group>
+            </group>
+            <group string="Report Filter">
+                <group>
+                    <field name="date_from"/> 
+                </group>
+                <group>
+                    <field name="date_to"/> 
+                </group>
+            </group>
+            <footer>
+                <button name="check_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                or <button string="Cancel" class="oe_link" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+
+    <record id="action_tax_reports" model="ir.actions.act_window">
+        <field name="name">Print Tax Report</field>
+        <field name="res_model">tax.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+<!--        <field name="view_type">form</field>-->
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account_tax_report_view"/>
+        <field name="target">new</field>
+    </record>
+
+<!--    <menuitem id="menu_tax_report" name="Print Tax Report(Custom)" action="action_tax_reports" parent="account.menu_finance_legal_statement"/>-->
+    <menuitem id="menu_pdf_report" name="PDF Reports" parent="account.menu_finance_reports"/>
+    <menuitem id="menu_tax_report" name="Print Tax Report" action="action_tax_reports" parent="menu_pdf_report"/>
+
+</odoo>

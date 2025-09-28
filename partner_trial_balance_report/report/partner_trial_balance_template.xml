@@ -1,0 +1,74 @@
+<odoo>
+    <template id="partner_trial_template">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div style="text-align:center;">
+                        <h5>
+                            <t t-esc="env['res.company'].browse(data['company']).name"/>
+                        </h5>
+                    </div>
+                </div>
+                <div class="page">
+                    <h2>Partner Trial Balance Report</h2>
+                    <p>
+                        <strong>Period:</strong>
+                        <span t-esc="data['date_from']"/>
+                        to
+                        <span t-esc="data['date_to']"/>
+                    </p>
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Partner Name</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="report_values" t-as="line">
+                                <t t-if="not data['is_balance']">
+                                    <tr t-if="line['balance'] != 0">
+                                        <td>
+                                            <t t-esc="line['partner_name']"/>
+                                        </td>
+                                        <td style="text-align:right">
+                                            <t t-esc="line['debit']" t-options="{'widget':'float','precision':2}"/>
+                                        </td>
+                                        <td style="text-align:right">
+                                            <t t-esc="line['credit']" t-options="{'widget':'float','precision':2}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="line['partner_name']"/>
+                                        </td>
+                                        <td style="text-align:right">
+                                            <t t-esc="line['debit']" t-options="{'widget':'float','precision':2}"/>
+                                        </td>
+                                        <td style="text-align:right">
+                                            <t t-esc="line['credit']" t-options="{'widget':'float','precision':2}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <tr>
+                                <td/>
+                                <td style="text-align:right">
+                                    <t t-esc="sum(l['debit'] if l['balance'] != 0 else 0 for l in report_values)"
+                                       t-options="{'widget':'float','precision':2}"/>
+                                </td>
+                                <td style="text-align:right">
+                                    <t t-esc="sum(l['credit'] if l['balance'] != 0 else 0 for l in report_values)"
+                                       t-options="{'widget':'float','precision':2}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

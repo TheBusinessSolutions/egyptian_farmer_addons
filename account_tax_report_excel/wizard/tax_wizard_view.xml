@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account_tax_report_view_inherit_xl" model="ir.ui.view">
+        <field name="name">tax.report.form.inherit.xl</field>
+        <field name="model">tax.report.wizard</field>
+        <field name="inherit_id" ref="account_tax_report.account_tax_report_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_detail']" position="after">
+                <field name="print_in_excel"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
