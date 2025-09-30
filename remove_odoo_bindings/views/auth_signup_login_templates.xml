@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="auth_signup_remove" inherit_id="auth_signup.login" name="Sign up - Reset Password">
+        <xpath expr="//div[@class='justify-content-between mt-2 d-flex small']" position="replace">
+            <a t-if="reset_password_enabled" t-attf-href="/web/reset_password?{{ keep_query() }}">Reset Password</a>
+        </xpath>
+
+
+    </template>
+</odoo>

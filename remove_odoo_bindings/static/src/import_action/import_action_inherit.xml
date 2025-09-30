@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="base_import.ImportAction" t-inherit-mode="extension">
+
+        <!-- Remove Import FAQ -->
+        <xpath expr="//div[contains(@class, 'mt16 mb4')]" position="replace">
+            <!-- This leaves the section completely empty -->   
+        </xpath>
+        <xpath expr="//div[contains(@class, 'o_nocontent_help')]/a" position="replace">
+            <!-- This leaves the section completely empty -->   
+        </xpath>
+    </t>
+</templates>

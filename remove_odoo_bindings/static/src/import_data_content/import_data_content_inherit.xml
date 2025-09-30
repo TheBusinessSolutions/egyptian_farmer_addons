@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="base_import.ImportDataContent" t-inherit-mode="extension">
+        <!-- Change "Odoo Field" to "Field" -->
+        <xpath expr="//thead/tr/th[2]" position="replace">
+            <th scope="col" style="width: 20%;">Field</th>
+        </xpath>
+        
+        <!-- Change the alert text -->
+        <xpath expr="//p[contains(@class, 'alert-info')]" position="replace">
+            <p class="alert alert-info mb-0">
+                If the file contains
+                the column names, We can try auto-detecting the
+                field corresponding to the column. This makes imports
+                simpler especially when the file has many columns.
+            </p>
+        </xpath>
+    </t>
+</templates>

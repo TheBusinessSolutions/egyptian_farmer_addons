@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <!-- Hide Notification field -->
+        <record id="inherited_base_view_users_form_simple_modif_notification_hide"
+            model="ir.ui.view">
+            <field name="name">inherited.model.form.inherit.test.remove.notification</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="mail.view_users_form_simple_modif_mail" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='notification_type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Hide Odoobot status field  Remember to comment/remove below record if the mail_bot
+        removed from module depends -->
+        <record id="inherited_base_view_users_form_simple_modif_odoobot_hide"
+            model="ir.ui.view">
+            <field name="name">inherited.model.form.inherit.test.remove.odoobot.state</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="mail.view_users_form_simple_modif_mail" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='odoobot_state']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <!-- Remove the documentation link to Odoo's API Keys in preferences form-->
+        <record id="inherited_base_view_users_form_simple_modif_API_key_group_hide"
+            model="ir.ui.view">
+            <field name="name">inherited.model.form.inherit.remove.api_key.group</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form_simple_modif" />
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='page_account_security']/group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Remove the documentation link to Odoo's 2FA in preferences form-->
+        <record model="ir.ui.view" id="view_totp_field_custom">
+            <field name="name">users preference: totp custom</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="auth_totp.view_totp_field" />
+            <field name="arch" type="xml">
+                <!-- Find and replace the link -->
+                <xpath
+                    expr="//a[@href='https://www.odoo.com/documentation/17.0/applications/general/auth/2fa.html']"
+                    position="replace">
+                    <!-- If you want to keep empty then remove the below <a> tag or replace your own
+                    link here -->
+                    <a
+                        href="https://www.microsoft.com/en-ie/security/business/security-101/what-is-two-factor-authentication-2fa"
+                        title="Learn More" target="_blank">
+                        <i title="Documentation" class="fa fa-fw o_button_icon fa-info-circle"></i>
+                        Learn More </a>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
