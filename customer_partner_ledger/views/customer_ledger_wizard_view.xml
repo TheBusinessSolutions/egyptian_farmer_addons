@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_customer_ledger_wizard_form" model="ir.ui.view">
+        <field name="name">customer.ledger.wizard.form</field>
+        <field name="model">customer.ledger.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Customer Ledger Report">
+                <group>
+                    <field name="customer_id"/>
+                </group>
+
+                <footer>
+                    <button name="action_preview_report" type="object" string="Preview Report" class="btn-primary"/>
+
+                    <button name="action_generate_ledger" type="object" string="Export PDF" class="btn-primary"/>
+
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_customer_ledger_wizard" model="ir.actions.act_window">
+        <field name="name">Customer Ledger</field>
+        <field name="res_model">customer.ledger.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_customer_ledger_report" name="Customer Ledger"
+              parent="account.menu_finance_reports"/>
+
+    <menuitem id="menu_customer_ledger_report_wizard" name="Customer Ledger"
+              parent="menu_customer_ledger_report"
+              action="action_customer_ledger_wizard"/>
+</odoo>

@@ -1,0 +1,61 @@
+<odoo>
+    <record id="customer_ledger_report" model="ir.actions.report">
+        <field name="name">Customer Ledger</field>
+        <field name="model">customer.ledger.report</field>
+        <field name="report_type">qweb-pdf</field>
+       <!-- <field name="binding_model_id" ref="customer.ledger.report"/> -->
+        <!-- <field name="groups_id" eval="[(4, ref('base.group_user'))]"/> -->
+        <field name="report_name">customer_partner_ledger.report_customer_ledger</field>
+        <field name="print_report_name">'Customer Ledger - %s' % (object.customer_id.name)</field>
+    </record>
+
+    <template id="report_customer_ledger">
+        <!-- Ensure the report inherits the standard layout -->
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="docs[0]"/>
+            <main>
+                <div class="oe_structure">
+                    <h2>Partner Ledger Report</h2>
+                    
+                    <h4>
+                        Partner:
+                         
+                        <t t-esc="doc.customer_id.name"/>
+                    </h4>
+
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.get_ledger_data(doc.customer_id.id)" t-as="entry">
+                                <tr>
+                                    <td><t t-esc="entry['date']"/></td>
+                                    <td><t t-esc="entry['description']"/></td>
+                                    <td><t t-esc="entry['debit']"/></td>
+                                    <td><t t-esc="entry['credit']"/></td>
+                                    <td><t t-esc="entry['balance']"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+
+                         <!-- Closing Balance Row -->
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" style="text-align: right; font-weight: bold;">Closing Balance:</td>
+                                <td><t t-esc="doc.get_ledger_data(doc.customer_id.id)[-1]['balance']"/></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </main>
+        </t>
+    </template>
+
+</odoo>

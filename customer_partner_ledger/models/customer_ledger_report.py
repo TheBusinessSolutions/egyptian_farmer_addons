@@ -1,0 +1,105 @@
+from odoo import models, fields, api
+
+class CustomerLedgerReport(models.Model):
+    _name = 'customer.ledger.report'
+    _description = 'Customer Ledger Report'
+    
+    customer_id = fields.Many2one('res.partner', string="Customer", required=True)
+
+    date = fields.Date(string="Date")
+    
+    description = fields.Char(string="Description")
+    
+    debit = fields.Float(string="Debit")
+    
+    credit = fields.Float(string="Credit")
+    
+    balance = fields.Float(string="Balance")
+
+    
+    @api.model
+    def get_ledger_data(self, customer_id):
+        """
+        Fetches customer transactions including opening balance, invoices, and payments.
+        """
+        ledger_entries = []
+        total_balance = 0
+
+        partner = self.env['res.partner'].browse(customer_id)
+        
+        if partner.customer_rank > 0:
+            account_type = 'asset_receivable'
+        elif partner.supplier_rank > 0:
+            account_type = 'liability_payable'
+        else:
+            return [] #if not customer or vendor, return an empty list.
+
+        # Fetch Opening Balance
+        opening_balance = self.env['account.move.line'].search([
+            ('partner_id', '=', customer_id),
+            ('account_id.account_type', '=', account_type), 
+            ('move_id.state', '=', 'posted')
+        ], order='date asc', limit=1)
+
+        if opening_balance:
+            total_balance = opening_balance.debit - opening_balance.credit
+            ledger_entries.append({
+                'date': opening_balance.date,
+                'description': opening_balance.move_id.name,
+                'debit': opening_balance.debit,
+                'credit': opening_balance.credit,
+                'balance': total_balance
+            })
+        
+        # Fetch Invoices and Payments
+        if partner.customer_rank > 0:
+            transactions = self.env['account.move.line'].search([
+                ('partner_id', '=', customer_id),
+                ('account_id.account_type', '=', 'asset_receivable'),
+                ('move_id.state', '=', 'posted'), ('id', '!=', opening_balance.id)
+            ], order='date asc')
+        
+        elif partner.supplier_rank > 0:
+            transactions = self.env['account.move.line'].search([
+                ('partner_id', '=', customer_id),
+                ('account_id.account_type', '=', 'liability_payable'),
+                ('move_id.state', '=', 'posted'), ('id', '!=', opening_balance.id)
+            ], order='date asc')
+
+        for transaction in transactions:
+            amount = transaction.debit - transaction.credit
+            total_balance += amount
+            ledger_entries.append({
+                'date': transaction.date,
+                'description': transaction.move_id.name,
+                'debit': transaction.debit,
+                'credit': transaction.credit,
+                'balance': total_balance,
+
+                'remaining_balance': total_balance
+            })
+
+        # Add Closing Balance Entry at the End
+        if transactions:
+            ledger_entries.append({
+                'date': transactions[-1].date,  # Use the date of the last transaction
+                'description': 'Closing Balance',
+                'debit': 0,  # Closing balance has no debit
+                'credit': 0,  # Closing balance has no credit
+                'balance': total_balance  # Final computed balance
+            })
+
+
+        return ledger_entries
+
+    def action_export_pdf(self):
+        """
+        Triggers the QWeb PDF report for customer ledger.
+        """
+        # return self.env.ref('customer_partner_ledger.customer_ledger_report').report_action(self)
+
+        self.ensure_one()
+
+        return self.env.ref('customer_partner_ledger.customer_ledger_report').report_action(
+            self.env['customer.ledger.report'].create({'customer_id': self.customer_id.id})
+            )

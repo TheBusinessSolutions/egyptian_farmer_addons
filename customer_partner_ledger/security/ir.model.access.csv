@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_ledger_report,access_customer_ledger_report,model_customer_ledger_report,base.group_user,1,1,1,1
+
+access_customer_ledger_wizard,access_customer_ledger_wizard,model_customer_ledger_wizard,base.group_user,1,1,1,1
