@@ -16,7 +16,16 @@ class CustomerLedgerReport(models.Model):
     
     balance = fields.Float(string="Balance")
 
-    
+    # Add new fields for invoice lines
+    product_id = fields.Many2one('product.product', string="Product")
+    quantity = fields.Float(string="Quantity")
+    uom_id = fields.Many2one('uom.uom', string="UoM")
+    unit_price = fields.Float(string="Unit Price")
+    tax_ids = fields.Many2many('account.tax', string="Taxes")
+    item_total = fields.Float(string="Item Total")
+    is_invoice_line = fields.Boolean(string="Is Invoice Line")
+    parent_move_id = fields.Many2one('account.move', string="Parent Invoice")
+
     @api.model
     def get_ledger_data(self, customer_id):
         """
@@ -69,15 +78,38 @@ class CustomerLedgerReport(models.Model):
         for transaction in transactions:
             amount = transaction.debit - transaction.credit
             total_balance += amount
-            ledger_entries.append({
+            
+            entry = {
                 'date': transaction.date,
                 'description': transaction.move_id.name,
                 'debit': transaction.debit,
                 'credit': transaction.credit,
                 'balance': total_balance,
+                'remaining_balance': total_balance,
+                'is_invoice_line': False,
+                'parent_move_id': transaction.move_id.id
+            }
+            ledger_entries.append(entry)
 
-                'remaining_balance': total_balance
-            })
+            # Add invoice lines if this is an invoice
+            if transaction.move_id.move_type in ['out_invoice', 'in_invoice']:
+                for line in transaction.move_id.invoice_line_ids:
+                    line_entry = {
+                        'date': transaction.date,
+                        'description': f"    • {line.product_id.name or ''}",  # Indented description
+                        'product_id': line.product_id.id,
+                        'quantity': line.quantity,
+                        'uom_id': line.product_uom_id.id,
+                        'unit_price': line.price_unit,
+                        'tax_ids': line.tax_ids.ids,
+                        'item_total': line.price_subtotal,
+                        'debit': 0,
+                        'credit': 0,
+                        'balance': total_balance,
+                        'is_invoice_line': True,
+                        'parent_move_id': transaction.move_id.id
+                    }
+                    ledger_entries.append(line_entry)
 
         # Add Closing Balance Entry at the End
         if transactions:
