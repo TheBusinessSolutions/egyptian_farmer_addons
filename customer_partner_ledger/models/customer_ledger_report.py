@@ -3,6 +3,7 @@ from odoo import models, fields, api
 class CustomerLedgerReport(models.Model):
     _name = 'customer.ledger.report'
     _description = 'Customer Ledger Report'
+    _order = 'date, is_invoice_line'
     
     customer_id = fields.Many2one('res.partner', string="Customer", required=True)
 
@@ -124,14 +125,38 @@ class CustomerLedgerReport(models.Model):
 
         return ledger_entries
 
+    @api.model
+    def create_ledger_entries(self, customer_id):
+        """Creates actual records in the table instead of virtual ones"""
+        entries = self.get_ledger_data(customer_id)
+        created_entries = []
+        
+        for entry in entries:
+            record = self.create(entry)
+            created_entries.append(record.id)
+            
+        return created_entries
+
+    def action_view_report(self):
+        """Action to view the report"""
+        self.search([]).unlink()  # Clear existing entries
+        entries = self.create_ledger_entries(self.customer_id.id)
+        
+        return {
+            'name': 'Customer Ledger',
+            'type': 'ir.actions.act_window',
+            'res_model': 'customer.ledger.report',
+            'view_mode': 'tree',
+            'view_id': self.env.ref('customer_partner_ledger.view_customer_ledger_report_tree').id,
+            'domain': [('id', 'in', entries)],
+            'context': {'search_default_customer_id': self.customer_id.id}
+        }
+
     def action_export_pdf(self):
-        """
-        Triggers the QWeb PDF report for customer ledger.
-        """
-        # return self.env.ref('customer_partner_ledger.customer_ledger_report').report_action(self)
-
+        """Triggers the QWeb PDF report for customer ledger."""
         self.ensure_one()
-
+        entries = self.create_ledger_entries(self.customer_id.id)
+        
         return self.env.ref('customer_partner_ledger.customer_ledger_report').report_action(
-            self.env['customer.ledger.report'].create({'customer_id': self.customer_id.id})
-            )
+            self.browse(entries)
+        )
