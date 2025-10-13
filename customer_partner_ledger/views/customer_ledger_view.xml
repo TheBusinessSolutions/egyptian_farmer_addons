@@ -9,15 +9,15 @@
                 <field name="customer_id"/>
                 <field name="date"/>
                 <field name="description"/>
-                <field name="product_id" attrs="{'invisible': [('is_invoice_line', '=', False)]}"/>
-                <field name="quantity" attrs="{'invisible': [('is_invoice_line', '=', False)]}"/>
-                <field name="uom_id" attrs="{'invisible': [('is_invoice_line', '=', False)]}"/>
-                <field name="unit_price" attrs="{'invisible': [('is_invoice_line', '=', False)]}"/>
-                <field name="tax_ids" widget="many2many_tags" attrs="{'invisible': [('is_invoice_line', '=', False)]}"/>
-                <field name="item_total" attrs="{'invisible': [('is_invoice_line', '=', False)]}"/>
-                <field name="debit" attrs="{'invisible': [('is_invoice_line', '=', True)]}"/>
-                <field name="credit" attrs="{'invisible': [('is_invoice_line', '=', True)]}"/>
-                <field name="balance" attrs="{'invisible': [('is_invoice_line', '=', True)]}"/>
+                <field name="product_id" invisible="not is_invoice_line"/>
+                <field name="quantity" invisible="not is_invoice_line"/>
+                <field name="uom_id" invisible="not is_invoice_line"/>
+                <field name="unit_price" invisible="not is_invoice_line"/>
+                <field name="tax_ids" widget="many2many_tags" invisible="not is_invoice_line"/>
+                <field name="item_total" invisible="not is_invoice_line"/>
+                <field name="debit" invisible="is_invoice_line"/>
+                <field name="credit" invisible="is_invoice_line"/>
+                <field name="balance" invisible="is_invoice_line"/>
                 
                 <header>
                     <button name="action_export_pdf" type="object" string="Export PDF" class="oe_highlight"/>
