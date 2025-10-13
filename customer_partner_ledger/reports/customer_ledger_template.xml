@@ -16,39 +16,52 @@
             <main>
                 <div class="oe_structure">
                     <h2>Partner Ledger Report</h2>
-                    
-                    <h4>
-                        Partner:
-                         
-                        <t t-esc="doc.customer_id.name"/>
-                    </h4>
+                    <h4>Partner: <t t-esc="doc.customer_id.name"/></h4>
 
                     <table class="table table-condensed">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Description</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
-                                <th>Balance</th>
+                                <th t-if="doc.is_invoice_line">Product</th>
+                                <th t-if="doc.is_invoice_line">Quantity</th>
+                                <th t-if="doc.is_invoice_line">UoM</th>
+                                <th t-if="doc.is_invoice_line">Unit Price</th>
+                                <th t-if="doc.is_invoice_line">Tax</th>
+                                <th t-if="doc.is_invoice_line">Item Total</th>
+                                <th t-if="not doc.is_invoice_line">Debit</th>
+                                <th t-if="not doc.is_invoice_line">Credit</th>
+                                <th t-if="not doc.is_invoice_line">Balance</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="doc.get_ledger_data(doc.customer_id.id)" t-as="entry">
-                                <tr>
-                                    <td><t t-esc="entry['date']"/></td>
-                                    <td><t t-esc="entry['description']"/></td>
-                                    <td><t t-esc="entry['debit']"/></td>
-                                    <td><t t-esc="entry['credit']"/></td>
-                                    <td><t t-esc="entry['balance']"/></td>
+                                <tr t-att-class="entry.get('is_invoice_line') and 'text-info' or ''">
+                                    <td><t t-esc="entry.get('date')"/></td>
+                                    <td><t t-esc="entry.get('description')"/></td>
+                                    <t t-if="entry.get('is_invoice_line')">
+                                        <td><t t-esc="entry.get('product_id') and doc.env['product.product'].browse(entry.get('product_id')).name"/></td>
+                                        <td><t t-esc="entry.get('quantity')"/></td>
+                                        <td><t t-esc="entry.get('uom_id') and doc.env['uom.uom'].browse(entry.get('uom_id')).name"/></td>
+                                        <td><t t-esc="entry.get('unit_price')"/></td>
+                                        <td>
+                                            <t t-foreach="entry.get('tax_ids', [])" t-as="tax_id">
+                                                <span t-esc="doc.env['account.tax'].browse(tax_id).name"/><br/>
+                                            </t>
+                                        </td>
+                                        <td><t t-esc="entry.get('item_total')"/></td>
+                                    </t>
+                                    <t t-if="not entry.get('is_invoice_line')">
+                                        <td><t t-esc="entry.get('debit')"/></td>
+                                        <td><t t-esc="entry.get('credit')"/></td>
+                                        <td><t t-esc="entry.get('balance')"/></td>
+                                    </t>
                                 </tr>
                             </t>
                         </tbody>
-
-                         <!-- Closing Balance Row -->
                         <tfoot>
                             <tr>
-                                <td colspan="4" style="text-align: right; font-weight: bold;">Closing Balance:</td>
+                                <td colspan="8" style="text-align: right; font-weight: bold;">Closing Balance:</td>
                                 <td><t t-esc="doc.get_ledger_data(doc.customer_id.id)[-1]['balance']"/></td>
                             </tr>
                         </tfoot>
