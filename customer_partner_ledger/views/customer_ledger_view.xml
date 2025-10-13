@@ -30,15 +30,16 @@
                 <field name="customer_id"/>
                 <field name="date"/>
                 <field name="description"/>
-                <field name="product_id" invisible="not is_invoice_line"/>
-                <field name="quantity" invisible="not is_invoice_line"/>
-                <field name="uom_id" invisible="not is_invoice_line"/>
-                <field name="unit_price" invisible="not is_invoice_line"/>
-                <field name="tax_ids" widget="many2many_tags" invisible="not is_invoice_line"/>
-                <field name="item_total" invisible="not is_invoice_line"/>
-                <field name="debit" invisible="is_invoice_line"/>
-                <field name="credit" invisible="is_invoice_line"/>
-                <field name="balance" invisible="is_invoice_line"/>
+                <field name="product_id" optional="show"/>
+                <field name="quantity" optional="show"/>
+                <field name="uom_id" optional="show"/>
+                <field name="unit_price" optional="show"/>
+                <field name="discount" optional="show"/>
+                <field name="tax_ids" widget="many2many_tags" optional="show"/>
+                <field name="item_total" optional="show"/>
+                <field name="debit" optional="show"/>
+                <field name="credit" optional="show"/>
+                <field name="balance" optional="show"/>
             </tree>
         </field>
     </record>

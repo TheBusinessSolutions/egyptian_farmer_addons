@@ -3,14 +3,11 @@
         <field name="name">Customer Ledger</field>
         <field name="model">customer.ledger.report</field>
         <field name="report_type">qweb-pdf</field>
-       <!-- <field name="binding_model_id" ref="customer.ledger.report"/> -->
-        <!-- <field name="groups_id" eval="[(4, ref('base.group_user'))]"/> -->
         <field name="report_name">customer_partner_ledger.report_customer_ledger</field>
         <field name="print_report_name">'Customer Ledger - %s' % (object.customer_id.name)</field>
     </record>
 
     <template id="report_customer_ledger">
-        <!-- Ensure the report inherits the standard layout -->
         <t t-call="web.external_layout">
             <t t-set="doc" t-value="docs[0]"/>
             <main>
@@ -18,20 +15,21 @@
                     <h2>Partner Ledger Report</h2>
                     <h4>Partner: <t t-esc="doc.customer_id.name"/></h4>
 
-                    <table class="table table-condensed">
+                    <table class="table table-condensed table-bordered">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Description</th>
-                                <th t-if="doc.is_invoice_line">Product</th>
-                                <th t-if="doc.is_invoice_line">Quantity</th>
-                                <th t-if="doc.is_invoice_line">UoM</th>
-                                <th t-if="doc.is_invoice_line">Unit Price</th>
-                                <th t-if="doc.is_invoice_line">Tax</th>
-                                <th t-if="doc.is_invoice_line">Item Total</th>
-                                <th t-if="not doc.is_invoice_line">Debit</th>
-                                <th t-if="not doc.is_invoice_line">Credit</th>
-                                <th t-if="not doc.is_invoice_line">Balance</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>UoM</th>
+                                <th>Unit Price</th>
+                                <th>Discount</th>
+                                <th>Taxes</th>
+                                <th>Line Total</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Balance</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,30 +37,51 @@
                                 <tr t-att-class="entry.get('is_invoice_line') and 'text-info' or ''">
                                     <td><t t-esc="entry.get('date')"/></td>
                                     <td><t t-esc="entry.get('description')"/></td>
+                                    
+                                    <!-- Invoice Line Details -->
                                     <t t-if="entry.get('is_invoice_line')">
-                                        <td><t t-esc="entry.get('product_id') and doc.env['product.product'].browse(entry.get('product_id')).name"/></td>
-                                        <td><t t-esc="entry.get('quantity')"/></td>
-                                        <td><t t-esc="entry.get('uom_id') and doc.env['uom.uom'].browse(entry.get('uom_id')).name"/></td>
-                                        <td><t t-esc="entry.get('unit_price')"/></td>
+                                        <td><t t-esc="entry.get('product_id') and doc.env['product.product'].browse(entry.get('product_id')).name or ''"/></td>
+                                        <td class="text-right"><t t-esc="entry.get('quantity', 0)"/></td>
+                                        <td><t t-esc="entry.get('uom_id') and doc.env['uom.uom'].browse(entry.get('uom_id')).name or ''"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % entry.get('unit_price', 0)"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % entry.get('discount', 0)"/>%</td>
                                         <td>
                                             <t t-foreach="entry.get('tax_ids', [])" t-as="tax_id">
-                                                <span t-esc="doc.env['account.tax'].browse(tax_id).name"/><br/>
+                                                <span t-esc="doc.env['account.tax'].browse(tax_id).name"/>
+                                                <t t-if="not tax_id_last">, </t>
                                             </t>
                                         </td>
-                                        <td><t t-esc="entry.get('item_total')"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % entry.get('item_total', 0)"/></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </t>
-                                    <t t-if="not entry.get('is_invoice_line')">
-                                        <td><t t-esc="entry.get('debit')"/></td>
-                                        <td><t t-esc="entry.get('credit')"/></td>
-                                        <td><t t-esc="entry.get('balance')"/></td>
+                                    
+                                    <!-- Invoice/Payment Summary -->
+                                    <t t-else="">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % entry.get('debit', 0)"/></td>
+                                        <td class="text-right"><t t-esc="'%.2f' % entry.get('credit', 0)"/></td>
+                                        <td class="text-right"><strong><t t-esc="'%.2f' % entry.get('balance', 0)"/></strong></td>
                                     </t>
                                 </tr>
                             </t>
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <td colspan="8" style="text-align: right; font-weight: bold;">Closing Balance:</td>
-                                <td><t t-esc="doc.get_ledger_data(doc.customer_id.id)[-1]['balance']"/></td>
+                            <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                <td colspan="11" style="text-align: right;">Closing Balance:</td>
+                                <td class="text-right">
+                                    <t t-set="ledger_data" t-value="doc.get_ledger_data(doc.customer_id.id)"/>
+                                    <t t-if="ledger_data">
+                                        <t t-esc="'%.2f' % ledger_data[-1].get('balance', 0)"/>
+                                    </t>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -70,5 +89,4 @@
             </main>
         </t>
     </template>
-
 </odoo>

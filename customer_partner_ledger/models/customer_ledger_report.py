@@ -6,22 +6,18 @@ class CustomerLedgerReport(models.Model):
     _order = 'date, is_invoice_line'
     
     customer_id = fields.Many2one('res.partner', string="Customer", required=True)
-
     date = fields.Date(string="Date")
-    
     description = fields.Char(string="Description")
-    
     debit = fields.Float(string="Debit")
-    
     credit = fields.Float(string="Credit")
-    
     balance = fields.Float(string="Balance")
 
-    # Add new fields for invoice lines
+    # Invoice line fields
     product_id = fields.Many2one('product.product', string="Product")
     quantity = fields.Float(string="Quantity")
     uom_id = fields.Many2one('uom.uom', string="UoM")
     unit_price = fields.Float(string="Unit Price")
+    discount = fields.Float(string="Discount (%)")
     tax_ids = fields.Many2many('account.tax', string="Taxes")
     item_total = fields.Float(string="Item Total")
     is_invoice_line = fields.Boolean(string="Is Invoice Line")
@@ -42,7 +38,7 @@ class CustomerLedgerReport(models.Model):
         elif partner.supplier_rank > 0:
             account_type = 'liability_payable'
         else:
-            return [] #if not customer or vendor, return an empty list.
+            return []
 
         # Fetch Opening Balance
         opening_balance = self.env['account.move.line'].search([
@@ -54,11 +50,14 @@ class CustomerLedgerReport(models.Model):
         if opening_balance:
             total_balance = opening_balance.debit - opening_balance.credit
             ledger_entries.append({
+                'customer_id': customer_id,
                 'date': opening_balance.date,
-                'description': opening_balance.move_id.name,
+                'description': 'Opening Balance',
                 'debit': opening_balance.debit,
                 'credit': opening_balance.credit,
-                'balance': total_balance
+                'balance': total_balance,
+                'is_invoice_line': False,
+                'parent_move_id': opening_balance.move_id.id
             })
         
         # Fetch Invoices and Payments
@@ -66,14 +65,15 @@ class CustomerLedgerReport(models.Model):
             transactions = self.env['account.move.line'].search([
                 ('partner_id', '=', customer_id),
                 ('account_id.account_type', '=', 'asset_receivable'),
-                ('move_id.state', '=', 'posted'), ('id', '!=', opening_balance.id)
+                ('move_id.state', '=', 'posted'),
+                ('id', '!=', opening_balance.id if opening_balance else False)
             ], order='date asc')
-        
         elif partner.supplier_rank > 0:
             transactions = self.env['account.move.line'].search([
                 ('partner_id', '=', customer_id),
                 ('account_id.account_type', '=', 'liability_payable'),
-                ('move_id.state', '=', 'posted'), ('id', '!=', opening_balance.id)
+                ('move_id.state', '=', 'posted'),
+                ('id', '!=', opening_balance.id if opening_balance else False)
             ], order='date asc')
 
         for transaction in transactions:
@@ -81,47 +81,52 @@ class CustomerLedgerReport(models.Model):
             total_balance += amount
             
             entry = {
+                'customer_id': customer_id,
                 'date': transaction.date,
                 'description': transaction.move_id.name,
                 'debit': transaction.debit,
                 'credit': transaction.credit,
                 'balance': total_balance,
-                'remaining_balance': total_balance,
                 'is_invoice_line': False,
                 'parent_move_id': transaction.move_id.id
             }
             ledger_entries.append(entry)
 
             # Add invoice lines if this is an invoice
-            if transaction.move_id.move_type in ['out_invoice', 'in_invoice']:
+            if transaction.move_id.move_type in ['out_invoice', 'in_invoice', 'out_refund', 'in_refund']:
                 for line in transaction.move_id.invoice_line_ids:
-                    line_entry = {
-                        'date': transaction.date,
-                        'description': f"    • {line.product_id.name or ''}",  # Indented description
-                        'product_id': line.product_id.id,
-                        'quantity': line.quantity,
-                        'uom_id': line.product_uom_id.id,
-                        'unit_price': line.price_unit,
-                        'tax_ids': line.tax_ids.ids,
-                        'item_total': line.price_subtotal,
-                        'debit': 0,
-                        'credit': 0,
-                        'balance': total_balance,
-                        'is_invoice_line': True,
-                        'parent_move_id': transaction.move_id.id
-                    }
-                    ledger_entries.append(line_entry)
+                    # Skip lines without products or with excluded accounts
+                    if not line.display_type and line.product_id:
+                        line_entry = {
+                            'customer_id': customer_id,
+                            'date': transaction.date,
+                            'description': f"    • {line.name or line.product_id.name or 'N/A'}",
+                            'product_id': line.product_id.id,
+                            'quantity': line.quantity,
+                            'uom_id': line.product_uom_id.id,
+                            'unit_price': line.price_unit,
+                            'discount': line.discount,
+                            'tax_ids': line.tax_ids.ids,
+                            'item_total': line.price_subtotal,
+                            'debit': 0,
+                            'credit': 0,
+                            'balance': total_balance,
+                            'is_invoice_line': True,
+                            'parent_move_id': transaction.move_id.id
+                        }
+                        ledger_entries.append(line_entry)
 
         # Add Closing Balance Entry at the End
-        if transactions:
+        if ledger_entries:
             ledger_entries.append({
-                'date': transactions[-1].date,  # Use the date of the last transaction
+                'customer_id': customer_id,
+                'date': ledger_entries[-1]['date'],
                 'description': 'Closing Balance',
-                'debit': 0,  # Closing balance has no debit
-                'credit': 0,  # Closing balance has no credit
-                'balance': total_balance  # Final computed balance
+                'debit': 0,
+                'credit': 0,
+                'balance': total_balance,
+                'is_invoice_line': False
             })
-
 
         return ledger_entries
 
@@ -139,7 +144,7 @@ class CustomerLedgerReport(models.Model):
 
     def action_view_report(self):
         """Action to view the report"""
-        self.search([]).unlink()  # Clear existing entries
+        self.search([]).unlink()
         entries = self.create_ledger_entries(self.customer_id.id)
         
         return {
