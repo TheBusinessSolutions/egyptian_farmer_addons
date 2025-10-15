@@ -10,6 +10,8 @@ class CustomerLedgerReport(models.Model):
     debit = fields.Float(string="Debit")
     credit = fields.Float(string="Credit")
     balance = fields.Float(string="Balance")
+    move_id = fields.Many2one('account.move', string="Journal Entry")
+    line_ids = fields.One2many('customer.ledger.line', 'ledger_id', string="Invoice Lines")
 
     
     @api.model
