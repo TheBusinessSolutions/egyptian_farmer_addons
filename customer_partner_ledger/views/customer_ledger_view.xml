@@ -1,45 +1,19 @@
 <odoo>
-    <!-- Form view for customer selection -->
-    <record id="view_customer_ledger_form" model="ir.ui.view">
-        <field name="name">customer.ledger.report.form</field>
-        <field name="model">customer.ledger.report</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-                        <field name="customer_id"/>
-                    </group>
-                    <footer>
-                        <button name="action_view_report" string="View Report" type="object" class="btn-primary"/>
-                        <button name="action_export_pdf" string="Export PDF" type="object" class="btn-secondary"/>
-                        <button special="cancel" string="Cancel" class="btn-secondary"/>
-                    </footer>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Tree view for report display -->
     <record id="view_customer_ledger_report_tree" model="ir.ui.view">
         <field name="name">customer.ledger.report.tree</field>
         <field name="model">customer.ledger.report</field>
         <field name="arch" type="xml">
-            <tree string="Customer Ledger" create="false" decoration-info="is_invoice_line==True">
-                <field name="is_invoice_line" invisible="1"/>
-                <field name="parent_move_id" invisible="1"/>
+            <tree string="Customer Ledger">
                 <field name="customer_id"/>
                 <field name="date"/>
                 <field name="description"/>
-                <field name="product_id" optional="show"/>
-                <field name="quantity" optional="show"/>
-                <field name="uom_id" optional="show"/>
-                <field name="unit_price" optional="show"/>
-                <field name="discount" optional="show"/>
-                <field name="tax_ids" widget="many2many_tags" optional="show"/>
-                <field name="item_total" optional="show"/>
-                <field name="debit" optional="show"/>
-                <field name="credit" optional="show"/>
-                <field name="balance" optional="show"/>
+                <field name="debit"/>
+                <field name="credit"/>
+                <field name="balance"/>
+
+                <header>
+                    <button name="action_export_pdf" type="object" string="Export PDF" class="oe_highlight"/>
+                </header>
             </tree>
         </field>
     </record>

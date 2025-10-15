@@ -2,9 +2,7 @@
     <record id="action_customer_ledger_report" model="ir.actions.act_window">
         <field name="name">Customer Ledger Report</field>
         <field name="res_model">customer.ledger.report</field>
-        <field name="view_mode">form,tree</field>
-        <field name="view_id" ref="view_customer_ledger_report_tree"/>
-        <field name="target">main</field>
+        <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_sm">Generate customer ledger reports.</p>
         </field>
