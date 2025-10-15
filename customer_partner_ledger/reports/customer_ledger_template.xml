@@ -3,14 +3,11 @@
         <field name="name">Customer Ledger</field>
         <field name="model">customer.ledger.report</field>
         <field name="report_type">qweb-pdf</field>
-       <!-- <field name="binding_model_id" ref="customer.ledger.report"/> -->
-        <!-- <field name="groups_id" eval="[(4, ref('base.group_user'))]"/> -->
         <field name="report_name">customer_partner_ledger.report_customer_ledger</field>
         <field name="print_report_name">'Customer Ledger - %s' % (object.customer_id.name)</field>
     </record>
 
     <template id="report_customer_ledger">
-        <!-- Ensure the report inherits the standard layout -->
         <t t-call="web.external_layout">
             <t t-set="doc" t-value="docs[0]"/>
             <main>
@@ -18,14 +15,12 @@
                     <h2>Partner Ledger Report</h2>
                     
                     <h4>
-                        Partner:
-                         
-                        <t t-esc="doc.customer_id.name"/>
+                        Partner: <t t-esc="doc.customer_id.name"/>
                     </h4>
 
-                    <table class="table table-condensed">
+                    <table class="table table-condensed" style="width: 100%; margin-top: 20px;">
                         <thead>
-                            <tr>
+                            <tr style="background-color: #f0f0f0;">
                                 <th>Date</th>
                                 <th>Description</th>
                                 <th>Debit</th>
@@ -35,21 +30,56 @@
                         </thead>
                         <tbody>
                             <t t-foreach="doc.get_ledger_data(doc.customer_id.id)" t-as="entry">
+                                <!-- Main transaction row -->
                                 <tr>
                                     <td><t t-esc="entry['date']"/></td>
                                     <td><t t-esc="entry['description']"/></td>
-                                    <td><t t-esc="entry['debit']"/></td>
-                                    <td><t t-esc="entry['credit']"/></td>
-                                    <td><t t-esc="entry['balance']"/></td>
+                                    <td><t t-esc="'{:,.2f}'.format(entry['debit'])"/></td>
+                                    <td><t t-esc="'{:,.2f}'.format(entry['credit'])"/></td>
+                                    <td><t t-esc="'{:,.2f}'.format(entry['balance'])"/></td>
                                 </tr>
+                                
+                                <!-- Invoice line details (if any) -->
+                                <t t-if="entry.get('invoice_lines') and len(entry['invoice_lines']) > 0">
+                                    <tr>
+                                        <td colspan="5" style="padding: 0;">
+                                            <table style="width: 100%; margin: 10px 0; background-color: #f9f9f9;">
+                                                <thead>
+                                                    <tr style="background-color: #e9e9e9; font-size: 11px;">
+                                                        <th style="padding: 5px;">Product Name</th>
+                                                        <th style="padding: 5px; text-align: center;">Quantity</th>
+                                                        <th style="padding: 5px; text-align: center;">UoM</th>
+                                                        <th style="padding: 5px; text-align: right;">Unit Price</th>
+                                                        <th style="padding: 5px;">Taxes</th>
+                                                        <th style="padding: 5px; text-align: right;">Line Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="entry['invoice_lines']" t-as="line">
+                                                        <tr style="font-size: 11px;">
+                                                            <td style="padding: 5px;"><t t-esc="line['product_name']"/></td>
+                                                            <td style="padding: 5px; text-align: center;"><t t-esc="'{:.2f}'.format(line['quantity'])"/></td>
+                                                            <td style="padding: 5px; text-align: center;"><t t-esc="line['uom']"/></td>
+                                                            <td style="padding: 5px; text-align: right;"><t t-esc="'{:,.2f}'.format(line['unit_price'])"/></td>
+                                                            <td style="padding: 5px;"><t t-esc="line['taxes']"/></td>
+                                                            <td style="padding: 5px; text-align: right;"><t t-esc="'{:,.2f}'.format(line['line_amount'])"/></td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </t>
                             </t>
                         </tbody>
 
-                         <!-- Closing Balance Row -->
+                        <!-- Closing Balance Row -->
                         <tfoot>
-                            <tr>
-                                <td colspan="4" style="text-align: right; font-weight: bold;">Closing Balance:</td>
-                                <td><t t-esc="doc.get_ledger_data(doc.customer_id.id)[-1]['balance']"/></td>
+                            <tr style="background-color: #f0f0f0; font-weight: bold;">
+                                <td colspan="4" style="text-align: right; padding: 10px;">Closing Balance:</td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="'{:,.2f}'.format(doc.get_ledger_data(doc.customer_id.id)[-1]['balance'])"/>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
