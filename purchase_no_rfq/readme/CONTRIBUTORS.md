@@ -1,0 +1,4 @@
+- Sylvain LE GAL \<<https://twitter.com/legalsylvain>\>
+- [Binhex](https://binhex.cloud/):
+    -   Deriman Alonso
+- Alejandro Parrales \<<alejandro17parrales@gmail.com>\>
