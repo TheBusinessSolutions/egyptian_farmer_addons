@@ -1,0 +1,39 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* customer_balance_sales
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-02 13:42+0000\n"
+"PO-Revision-Date: 2025-11-02 15:50+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Generator: Poedit 3.5\n"
+
+#. module: customer_balance_sales
+#: model_terms:ir.ui.view,arch_db:customer_balance_sales.report_saleorder_document_balance
+msgid "<strong>Current Balance:</strong>"
+msgstr "<strong>الرصيد:</strong>"
+
+#. module: customer_balance_sales
+#: model:ir.model.fields,help:customer_balance_sales.field_sale_order__partner_balance
+msgid "Current balance from partner ledger"
+msgstr "الرصيد الحالي من واقع دفتر العميل"
+
+#. module: customer_balance_sales
+#: model:ir.model.fields,field_description:customer_balance_sales.field_sale_order__partner_balance
+msgid "Customer Balance"
+msgstr "رصيد"
+
+#. module: customer_balance_sales
+#: model:ir.model,name:customer_balance_sales.model_sale_order
+msgid "Sales Order"
+msgstr "امر البيع"
+
