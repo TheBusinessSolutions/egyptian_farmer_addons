@@ -1,0 +1,15 @@
+
+<odoo>
+    <template id="report_payment_receipt_document_amount_in_words" inherit_id="account.report_payment_receipt_document">
+        <xpath expr="//div[@class='mb-4 mt-3']" position="after">
+            <div class="amount-in-words">
+                <strong>Amount in English:</strong>
+                    <span t-esc="o.currency_id.with_context(lang='en_US').amount_to_text(o.amount)"/>
+                <br/>
+                <strong>Amount in Arabic:</strong>
+                    <span t-esc="o.currency_id.with_context(lang='ar_001').amount_to_text(o.amount)"/>
+                <br/>
+            </div>
+        </xpath>
+    </template>
+</odoo>
