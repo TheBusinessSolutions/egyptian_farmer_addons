@@ -121,9 +121,9 @@ class StockCardReport(models.AbstractModel):
                             for order in sale_stock_order_open:
                                 if order.location_id.id != order.location_dest_id.id :
                                     if order.product_uom_id.id != order.product_id.uom_id.id:
-                                        qty_done = order.product_uom_id.sh_compute_quantity(order.qty_done, order.product_id.uom_id)
+                                        qty_done = order.product_uom_id.sh_compute_quantity(order.quantity, order.product_id.uom_id)
                                     else:
-                                        qty_done = order.qty_done
+                                        qty_done = order.quantity
                                     if order.location_id.id == sh_location_id.id:
                                         transfer += qty_done
                                     elif order.location_dest_id.id == sh_location_id.id:
@@ -148,11 +148,11 @@ class StockCardReport(models.AbstractModel):
                                     elif not move.origin and not move.picking_code:
                                         origin = 'Inventory Adjustment'
                                     if move.location_id.id == sh_location_id.id:
-                                        total_out_qty += move.qty_done
-                                        out_qty = move.qty_done
+                                        total_out_qty += move.quantity
+                                        out_qty = move.quantity
                                     elif move.location_dest_id.id == sh_location_id.id:
-                                        total_in_qty += move.qty_done
-                                        in_qty = move.qty_done
+                                        total_in_qty += move.quantity
+                                        in_qty = move.quantity
                                     lines_list.append(
                                         [move_date.date(), origin, in_qty, out_qty, balance])
                             for index in range(0, len(lines_list)):
@@ -250,9 +250,9 @@ class StockCardReport(models.AbstractModel):
                         for order in sale_stock_order_open:
                             if order.location_id.id != order.location_dest_id.id :
                                 if order.product_uom_id.id != order.product_id.uom_id.id:
-                                    qty_done = order.product_uom_id.sh_compute_quantity(order.qty_done, order.product_id.uom_id)
+                                    qty_done = order.product_uom_id.sh_compute_quantity(order.quantity, order.product_id.uom_id)
                                 else:
-                                    qty_done = order.qty_done
+                                    qty_done = order.quantity
                                 if order.location_id.id == sh_location_id.id:
                                     transfer += qty_done
                                 elif order.location_dest_id.id == sh_location_id.id:
@@ -283,11 +283,11 @@ class StockCardReport(models.AbstractModel):
                                 elif not move.origin and not move.picking_code:
                                     origin = 'Inventory Adjustment'
                                 if move.location_id.id == sh_location_id.id:
-                                    total_out_qty += move.qty_done
-                                    out_qty = move.qty_done
+                                    total_out_qty += move.quantity
+                                    out_qty = move.quantity
                                 elif move.location_dest_id.id == sh_location_id.id:
-                                    total_in_qty += move.qty_done
-                                    in_qty = move.qty_done
+                                    total_in_qty += move.quantity
+                                    in_qty = move.quantity
                                 lines_list.append(
                                     [move_date.date(), origin, in_qty, out_qty, balance])
                         for index in range(0, len(lines_list)):
