@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:20+0000\n"
-"PO-Revision-Date: 2025-11-06 16:25+0200\n"
+"PO-Revision-Date: 2025-11-06 16:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar\n"
@@ -106,7 +106,7 @@ msgstr ""
 #. module: sh_stock_card_report
 #: model:ir.model.fields,field_description:sh_stock_card_report.field_sh_stock_card_report_wizard__sh_from_date
 msgid "From Date"
-msgstr "الي تاريخ"
+msgstr "من تاريخ"
 
 #. module: sh_stock_card_report
 #: model:ir.model.fields,field_description:sh_stock_card_report.field_sh_stock_card_report_wizard__sh_select_product_cat
