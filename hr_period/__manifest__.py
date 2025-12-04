@@ -11,7 +11,7 @@
     "author": "Savoir-faire Linux, " "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/hr",
     "depends": [
-        "payroll",
+        "om_hr_payroll",
         "date_range",
     ],
     "data": [
