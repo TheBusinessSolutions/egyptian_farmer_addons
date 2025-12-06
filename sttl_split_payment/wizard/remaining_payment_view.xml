@@ -1,0 +1,18 @@
+<odoo>
+    <record id="view_payment_remaining_form" model="ir.ui.view">
+        <field name="name">payment.remaining.form</field>
+        <field name="model">payment.remaining</field>
+        <field name="arch" type="xml">
+            <form string="Confirmation">
+                <group>
+                    <field name="message" readonly="1"/>
+                    <field name="amount" readonly="1"/>
+                </group>
+                <footer>
+                    <button string="Yes" type="object" name="action_yes" class="btn-primary"/>
+                    <button string="No" type="object" name="action_no" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

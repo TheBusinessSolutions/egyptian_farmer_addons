@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+sttl_split_payment.access_invoice_reconcile,access_invoice_reconcile,sttl_split_payment.model_invoice_reconcile,base.group_user,1,1,1,1
+sttl_split_payment.access_split_payment_line,access_custom_invoice_line,sttl_split_payment.model_split_payment_line,base.group_user,1,1,1,1
+sttl_split_payment.access_payment_remaining,access_payment_remaining,sttl_split_payment.model_payment_remaining,base.group_user,1,1,1,1

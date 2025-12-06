@@ -1,0 +1,17 @@
+<odoo>
+    <record id="account_payment_inherited" model="ir.ui.view">
+        <field name="name">account.payment.inherited</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/field[@name='id']" position="before">
+                <field name="is_split_payment" widget="badge" decoration-danger="is_split_payment == 'partial'" invisible="1" optional="show"/>
+                 <widget name="web_ribbon" title="Split"
+                                invisible="is_split_payment != 'partial'"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="invoice_reconcile_id" invisible="is_split_payment != 'partial'" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
