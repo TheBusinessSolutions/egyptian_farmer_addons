@@ -77,7 +77,7 @@
                                     <t t-if="entry.get('is_invoice') and entry.get('invoice_lines')">
                                         <tr>
                                             <td colspan="6" style="padding: 0; border: 1px solid #ddd; border-top: none;">
-                                                <div style="padding: 8px 15px; background-color: #ffffff; border-left: 4px solid #ccc;">
+                                                <div style="padding: 8px 15px; background-color: #ffffff; border-left: 1px solid #ccc;">
                                                     <div style="font-weight: bold; color: #875A7B; font-size: 11px; margin-bottom: 8px; padding-left: 15px;">
                                                         ▸ Product Details
                                                     </div>
