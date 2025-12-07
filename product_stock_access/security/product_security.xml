@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Create custom category for Product Creation -->
+        <record id="module_category_product_creation" model="ir.module.category">
+            <field name="name">Product Creation</field>
+            <field name="description">Product Creation Access</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- Create new access group under custom category -->
+        <record id="group_product_creator" model="res.groups">
+            <field name="name">Allow Create New Items</field>
+            <field name="category_id" ref="module_category_product_creation"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Users in this group can create, read and write products and product variants.</field>
+        </record>
+    </data>
+</odoo>
