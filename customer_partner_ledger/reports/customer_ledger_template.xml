@@ -67,7 +67,7 @@
                                         <td style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;">
                                             <t t-if="entry['credit'] > 0" t-esc="'{:,.2f}'.format(entry['credit'])"/>
                                         </td>
-                                        <td></td>
+                                        <td style></td>
                                         <td style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; font-size: 12px; background-color: #fff;">
                                             <t t-esc="'{:,.2f}'.format(entry['balance'])"/>
                                         </td>
