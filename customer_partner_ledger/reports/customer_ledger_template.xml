@@ -113,7 +113,9 @@
                                                                         <t t-esc="'{:,.2f}'.format(line['tax'])"/>
                                                                     </td>
                                                                     <td style="padding: 6px 10px; text-align: right; font-size: 10px;">
-                                                                        <t t-if="line['discount'] > 0" t-esc="'{:,.2f}'.format(line['discount'])"/>%
+                                                                        <t t-if="line['discount'] > 0">
+                                                                            <t t-esc="'{:,.2f}'.format(line['discount'])"/>%
+                                                                        </t>
                                                                         <t t-else="">-</t>
                                                                     </td>
                                                                     <td style="padding: 6px 10px; text-align: right; font-weight: bold; font-size: 10px;">
