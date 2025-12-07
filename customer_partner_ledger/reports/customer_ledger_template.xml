@@ -39,7 +39,6 @@
                                 <th style="padding: 10px; border: 1px solid #ddd; width: 12%; text-align: center;">Type</th>
                                 <th style="padding: 10px; border: 1px solid #ddd; width: 14%; text-align: right;">Debit</th>
                                 <th style="padding: 10px; border: 1px solid #ddd; width: 14%; text-align: right;">Credit</th>
-                                <th style="padding: 10px; border: 1px solid #ddd; width: 14%; text-align: right;"></th>
                                 <th style="padding: 10px; border: 1px solid #ddd; width: 14%; text-align: right;">Balance</th>
                             </tr>
                         </thead>
@@ -67,8 +66,8 @@
                                         <td style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;">
                                             <t t-if="entry['credit'] > 0" t-esc="'{:,.2f}'.format(entry['credit'])"/>
                                         </td>
-                                        <td style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;"></td>
-                                        <td style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; font-size: 12px; background-color: #fff;">
+                                        <!-- <td style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;"></td> -->
+                                        <td colspan="2" style="padding: 10px 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; font-size: 12px; background-color: #fff;">
                                             <t t-esc="'{:,.2f}'.format(entry['balance'])"/>
                                         </td>
                                     </tr>
@@ -76,7 +75,7 @@
                                     <!-- Product Details Section (1 cell indent) -->
                                     <t t-if="entry.get('is_invoice') and entry.get('invoice_lines')">
                                         <tr>
-                                            <td colspan="6" style="padding: 0; border: 1px solid #ddd; border-top: none;">
+                                            <td colspan="7" style="padding: 0; border: 0px solid #ddd; border-top: none;">
                                                 <div style="padding: 8px 15px; background-color: #ffffff; border-left: 1px solid #ccc;">
                                                     <div style="font-weight: bold; color: #875A7B; font-size: 11px; margin-bottom: 8px; padding-left: 15px;">
                                                         ▸ Product Details
@@ -139,7 +138,7 @@
                                     <!-- Payment Details Section (1 cell indent) -->
                                     <t t-if="entry.get('is_invoice') and entry.get('related_payments')">
                                         <tr>
-                                            <td colspan="6" style="padding: 0; border: 1px solid #ddd; border-top: none;">
+                                            <td colspan="7" style="padding: 0; border: 0px solid #ddd; border-top: none;">
                                                 <div style="padding: 8px 15px; background-color: #f9fff9; border-left: 4px solid #28a745;">
                                                     <div style="font-weight: bold; color: #28a745; font-size: 11px; margin-bottom: 8px; padding-left: 15px;">
                                                         ▸ Payment Details
@@ -185,7 +184,7 @@
 
                                     <!-- Spacing Row -->
                                     <tr>
-                                        <td colspan="6" style="height: 10px; border: none;"></td>
+                                        <td colspan="7" style="height: 10px; border: none;"></td>
                                     </tr>
 
                                 </t>
@@ -195,7 +194,7 @@
                         <!-- Closing Balance Footer -->
                         <tfoot>
                             <tr style="background-color: #875A7B; color: white; font-weight: bold; font-size: 13px;">
-                                <td colspan="6" style="padding: 12px; border: 0px solid #875A7B; text-align: right;">
+                                <td colspan="7" style="padding: 12px; border: 0px solid #875A7B; text-align: right;">
                                     CLOSING BALANCE:
                                 </td>
                                 <td style="padding: 12px; border: 1px solid #875A7B; text-align: right; font-size: 14px;">
