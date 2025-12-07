@@ -195,7 +195,7 @@
                         <!-- Closing Balance Footer -->
                         <tfoot>
                             <tr style="background-color: #875A7B; color: white; font-weight: bold; font-size: 13px;">
-                                <td colspan="5" style="padding: 12px; border: 1px solid #875A7B; text-align: right;">
+                                <td colspan="6" style="padding: 12px; border: 0px solid #875A7B; text-align: right;">
                                     CLOSING BALANCE:
                                 </td>
                                 <td style="padding: 12px; border: 1px solid #875A7B; text-align: right; font-size: 14px;">
