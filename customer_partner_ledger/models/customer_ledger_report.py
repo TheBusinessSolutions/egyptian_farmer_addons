@@ -5,18 +5,21 @@ class CustomerLedgerReport(models.Model):
     _description = 'Customer Ledger Report'
     
     customer_id = fields.Many2one('res.partner', string="Customer", required=True)
-    date = fields.Date(string="Date")
-    description = fields.Char(string="Description")
-    debit = fields.Float(string="Debit")
-    credit = fields.Float(string="Credit")
-    balance = fields.Float(string="Balance")
+    date_from = fields.Date(string="Date From", readonly=True)
+    date_to = fields.Date(string="Date To", readonly=True)
+    date = fields.Date(string="Date", readonly=True)
+    description = fields.Char(string="Description", readonly=True)
+    debit = fields.Float(string="Debit", readonly=True)
+    credit = fields.Float(string="Credit", readonly=True)
+    balance = fields.Float(string="Balance", readonly=True)
 
     
     @api.model
-    def get_ledger_data(self, customer_id):
+    def get_ledger_data(self, customer_id, date_from=None, date_to=None):
         """
         Fetches customer transactions including opening balance, invoices, and payments.
         Now includes detailed invoice line items and transaction types.
+        Supports date filtering.
         """
         ledger_entries = []
         total_balance = 0
@@ -30,55 +33,54 @@ class CustomerLedgerReport(models.Model):
         else:
             return []
 
-        # Fetch Opening Balance (if exists)
-        opening_balance = self.env['account.move.line'].search([
+        # Build domain for date filtering
+        domain = [
             ('partner_id', '=', customer_id),
             ('account_id.account_type', '=', account_type), 
             ('move_id.state', '=', 'posted')
-        ], order='date asc', limit=1)
+        ]
+        
+        # Add date filters if provided
+        if date_from:
+            domain.append(('date', '>=', date_from))
+        if date_to:
+            domain.append(('date', '<=', date_to))
 
-        opening_balance_id = False
-        if opening_balance:
-            # Only add opening balance if it's not an invoice (to avoid duplication)
-            if opening_balance.move_id.move_type not in ['out_invoice', 'in_invoice', 'out_refund', 'in_refund', 'entry']:
-                total_balance = opening_balance.debit - opening_balance.credit
+        # Calculate Opening Balance (before date_from)
+        if date_from:
+            opening_domain = [
+                ('partner_id', '=', customer_id),
+                ('account_id.account_type', '=', account_type), 
+                ('move_id.state', '=', 'posted'),
+                ('date', '<', date_from)
+            ]
+            opening_lines = self.env['account.move.line'].search(opening_domain)
+            
+            for line in opening_lines:
+                total_balance += line.debit - line.credit
+            
+            # Add opening balance entry if there's a balance
+            if total_balance != 0:
                 ledger_entries.append({
-                    'date': opening_balance.date,
-                    'description': opening_balance.move_id.name,
+                    'date': date_from,
+                    'description': 'Opening Balance',
                     'type': 'Opening Balance',
-                    'debit': opening_balance.debit,
-                    'credit': opening_balance.credit,
+                    'debit': total_balance if total_balance > 0 else 0,
+                    'credit': abs(total_balance) if total_balance < 0 else 0,
                     'balance': total_balance,
                     'is_invoice': False,
                     'invoice_lines': [],
                     'related_payments': []
                 })
-                opening_balance_id = opening_balance.id
-        
-        # Fetch ALL Invoices and Payments
-        if partner.customer_rank > 0:
-            transactions = self.env['account.move.line'].search([
-                ('partner_id', '=', customer_id),
-                ('account_id.account_type', '=', 'asset_receivable'),
-                ('move_id.state', '=', 'posted')
-            ], order='date asc, id asc')
-        
-        elif partner.supplier_rank > 0:
-            transactions = self.env['account.move.line'].search([
-                ('partner_id', '=', customer_id),
-                ('account_id.account_type', '=', 'liability_payable'),
-                ('move_id.state', '=', 'posted')
-            ], order='date asc, id asc')
 
-        # Group transactions by invoice to track payments
-        invoice_entries = {}
-        
+        # Fetch transactions within date range
+        if partner.customer_rank > 0:
+            transactions = self.env['account.move.line'].search(domain, order='date asc, id asc')
+        elif partner.supplier_rank > 0:
+            transactions = self.env['account.move.line'].search(domain, order='date asc, id asc')
+
         # Process each transaction
         for transaction in transactions:
-            # Skip if this was already added as opening balance
-            if opening_balance_id and transaction.id == opening_balance_id:
-                continue
-                
             amount = transaction.debit - transaction.credit
             total_balance += amount
             

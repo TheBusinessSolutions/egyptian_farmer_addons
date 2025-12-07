@@ -6,14 +6,22 @@
         <field name="arch" type="xml">
             <form string="Customer Ledger Report">
                 <group>
-                    <field name="customer_id"/>
+                    <group>
+                        <field name="customer_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <label for="date_from" string="Date Range"/>
+                        <div class="o_row">
+                            <field name="date_from" widget="date" required="1"/>
+                            <span> to </span>
+                            <field name="date_to" widget="date" required="1"/>
+                        </div>
+                    </group>
                 </group>
 
                 <footer>
                     <button name="action_preview_report" type="object" string="Preview Report" class="btn-primary"/>
-
                     <button name="action_generate_ledger" type="object" string="Export PDF" class="btn-primary"/>
-
                     <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
