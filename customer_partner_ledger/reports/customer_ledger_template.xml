@@ -12,89 +12,99 @@
         <t t-call="web.external_layout">
             <t t-set="doc" t-value="docs[0]"/>
             <main>
-                <div class="oe_structure">
-                    <h2>Partner Ledger Report</h2>
+                <div class="page">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Partner Ledger Report</h2>
                     
-                    <h4>
+                    <h4 style="margin-bottom: 20px;">
                         Partner: <t t-esc="doc.customer_id.name"/>
                     </h4>
 
-                    <table class="table table-condensed" style="width: 100%;">
+                    <table class="table table-sm" style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr style="background-color: #f0f0f0;">
-                                <th style="width: 12%;">Date</th>
-                                <th style="width: 28%;">Description</th>
-                                <th style="width: 15%; text-align: right;">Debit</th>
-                                <th style="width: 15%; text-align: right;">Credit</th>
-                                <th style="width: 15%; text-align: right;">Balance</th>
+                            <tr style="background-color: #875A7B; color: white;">
+                                <th style="padding: 8px; border: 1px solid #ddd; width: 10%;">Date</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; width: 35%;">Description</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; width: 15%; text-align: right;">Debit</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; width: 15%; text-align: right;">Credit</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; width: 15%; text-align: right;">Balance</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="doc.get_ledger_data(doc.customer_id.id)" t-as="entry">
-                                <!-- Main invoice/transaction row -->
-                                <tr t-att-style="'font-weight: bold;' if entry.get('is_invoice') else ''">
-                                    <td><t t-esc="entry['date']"/></td>
-                                    <td><t t-esc="entry['description']"/></td>
-                                    <td style="text-align: right;">
-                                        <t t-esc="'{:,.2f}'.format(entry['debit'])" t-if="entry['debit'] > 0"/>
-                                    </td>
-                                    <td style="text-align: right;">
-                                        <t t-esc="'{:,.2f}'.format(entry['credit'])" t-if="entry['credit'] > 0"/>
-                                    </td>
-                                    <td style="text-align: right;">
-                                        <t t-esc="'{:,.2f}'.format(entry['balance'])"/>
-                                    </td>
-                                </tr>
-
-                                <!-- Invoice line items (if this is an invoice) -->
-                                <t t-if="entry.get('is_invoice') and entry.get('invoice_lines')">
-                                    <!-- Header row for line items -->
-                                    <tr style="background-color: #f9f9f9; font-size: 11px;">
-                                        <td colspan="2" style="padding-left: 40px; font-weight: bold;">Product</td>
-                                        <td style="text-align: center; font-weight: bold;">Qty</td>
-                                        <td style="text-align: center; font-weight: bold;">UoM</td>
-                                        <td style="text-align: right; font-weight: bold;">Unit Price</td>
-                                    </tr>
-                                    <tr style="background-color: #f9f9f9; font-size: 11px;">
-                                        <td style="text-align: center; font-weight: bold;">Tax</td>
-                                        <td style="text-align: center; font-weight: bold;">Discount %</td>
-                                        <td colspan="2" style="text-align: right; font-weight: bold;">Line Total</td>
-                                        <td></td>
+                                <!-- Skip closing balance in the loop (it will be shown in footer) -->
+                                <t t-if="entry['description'] != 'Closing Balance'">
+                                    <!-- Main invoice/transaction row -->
+                                    <tr style="border: 1px solid #ddd;">
+                                        <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+                                            <t t-esc="entry['date']"/>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top; font-weight: bold;">
+                                            <t t-esc="entry['description']"/>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right; vertical-align: top;">
+                                            <span t-if="entry['debit'] > 0">
+                                                <t t-esc="'{:,.2f}'.format(entry['debit'])"/>
+                                            </span>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right; vertical-align: top;">
+                                            <span t-if="entry['credit'] > 0">
+                                                <t t-esc="'{:,.2f}'.format(entry['credit'])"/>
+                                            </span>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right; vertical-align: top; font-weight: bold;">
+                                            <t t-esc="'{:,.2f}'.format(entry['balance'])"/>
+                                        </td>
                                     </tr>
 
-                                    <!-- Detail rows for each line item -->
-                                    <t t-foreach="entry['invoice_lines']" t-as="line">
-                                        <tr style="background-color: #fafafa; font-size: 10px;">
-                                            <td colspan="2" style="padding-left: 40px;">
-                                                <t t-esc="line['product_name']"/>
+                                    <!-- Invoice line items (if this is an invoice) -->
+                                    <t t-if="entry.get('is_invoice') and entry.get('invoice_lines')">
+                                        <tr>
+                                            <td colspan="5" style="padding: 0; border: 1px solid #ddd;">
+                                                <!-- Nested table for invoice line details -->
+                                                <table style="width: 100%; margin: 0; background-color: #f8f9fa;">
+                                                    <thead>
+                                                        <tr style="background-color: #e9ecef;">
+                                                            <th style="padding: 6px 6px 6px 20px; font-size: 11px; width: 35%; border-bottom: 1px solid #ddd;">Product</th>
+                                                            <th style="padding: 6px; font-size: 11px; width: 8%; text-align: center; border-bottom: 1px solid #ddd;">Qty</th>
+                                                            <th style="padding: 6px; font-size: 11px; width: 10%; text-align: center; border-bottom: 1px solid #ddd;">UoM</th>
+                                                            <th style="padding: 6px; font-size: 11px; width: 12%; text-align: right; border-bottom: 1px solid #ddd;">Unit Price</th>
+                                                            <th style="padding: 6px; font-size: 11px; width: 10%; text-align: right; border-bottom: 1px solid #ddd;">Tax</th>
+                                                            <th style="padding: 6px; font-size: 11px; width: 10%; text-align: right; border-bottom: 1px solid #ddd;">Discount %</th>
+                                                            <th style="padding: 6px; font-size: 11px; width: 15%; text-align: right; border-bottom: 1px solid #ddd;">Line Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="entry['invoice_lines']" t-as="line">
+                                                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                                                <td style="padding: 6px 6px 6px 20px; font-size: 10px;">
+                                                                    <t t-esc="line['product_name']"/>
+                                                                </td>
+                                                                <td style="padding: 6px; font-size: 10px; text-align: center;">
+                                                                    <t t-esc="'{:,.2f}'.format(line['quantity'])"/>
+                                                                </td>
+                                                                <td style="padding: 6px; font-size: 10px; text-align: center;">
+                                                                    <t t-esc="line['uom']"/>
+                                                                </td>
+                                                                <td style="padding: 6px; font-size: 10px; text-align: right;">
+                                                                    <t t-esc="'{:,.2f}'.format(line['unit_price'])"/>
+                                                                </td>
+                                                                <td style="padding: 6px; font-size: 10px; text-align: right;">
+                                                                    <t t-esc="'{:,.2f}'.format(line['tax'])"/>
+                                                                </td>
+                                                                <td style="padding: 6px; font-size: 10px; text-align: right;">
+                                                                    <span t-if="line['discount'] > 0">
+                                                                        <t t-esc="'{:,.2f}'.format(line['discount'])"/>%
+                                                                    </span>
+                                                                    <span t-else="">-</span>
+                                                                </td>
+                                                                <td style="padding: 6px; font-size: 10px; text-align: right; font-weight: bold;">
+                                                                    <t t-esc="'{:,.2f}'.format(line['line_total'])"/>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
                                             </td>
-                                            <td style="text-align: center;">
-                                                <t t-esc="'{:,.2f}'.format(line['quantity'])"/>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <t t-esc="line['uom']"/>
-                                            </td>
-                                            <td style="text-align: right;">
-                                                <t t-esc="'{:,.2f}'.format(line['unit_price'])"/>
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: #fafafa; font-size: 10px;">
-                                            <td style="text-align: center;">
-                                                <t t-esc="'{:,.2f}'.format(line['tax'])"/>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <t t-esc="'{:,.2f}'.format(line['discount'])" t-if="line['discount'] > 0"/>
-                                                <t t-if="line['discount'] == 0">-</t>
-                                            </td>
-                                            <td colspan="2" style="text-align: right; font-weight: bold;">
-                                                <t t-esc="'{:,.2f}'.format(line['line_total'])"/>
-                                            </td>
-                                            <td></td>
-                                        </tr>
-
-                                        <!-- Separator line between items -->
-                                        <tr style="background-color: #fafafa;">
-                                            <td colspan="5" style="border-bottom: 1px dashed #ddd;"></td>
                                         </tr>
                                     </t>
                                 </t>
@@ -103,9 +113,11 @@
 
                         <!-- Closing Balance Row -->
                         <tfoot>
-                            <tr style="font-weight: bold; background-color: #e0e0e0;">
-                                <td colspan="4" style="text-align: right; padding-right: 10px;">Closing Balance:</td>
-                                <td style="text-align: right;">
+                            <tr style="background-color: #875A7B; color: white; font-weight: bold;">
+                                <td colspan="4" style="padding: 10px; border: 1px solid #ddd; text-align: right; font-size: 14px;">
+                                    Closing Balance:
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #ddd; text-align: right; font-size: 14px;">
                                     <t t-esc="'{:,.2f}'.format(doc.get_ledger_data(doc.customer_id.id)[-1]['balance'])"/>
                                 </td>
                             </tr>
