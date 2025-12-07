@@ -112,9 +112,11 @@ class CustomerLedgerReport(models.Model):
             
             ledger_entries.append(entry)
             
-            # Store invoice entries for payment matching
-            if is_invoice:
-                invoice_entries[transaction.move_id.id] = entry
+        # Group transactions by invoice to track payments
+        invoice_entries = {}
+        for entry in ledger_entries:
+            if entry.get('is_invoice') and entry.get('move_id'):
+                invoice_entries[entry['move_id']] = entry
 
         # Match payments to invoices
         self._link_payments_to_invoices(ledger_entries, invoice_entries)
