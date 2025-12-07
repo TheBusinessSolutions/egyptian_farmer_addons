@@ -121,6 +121,9 @@
                                                                     <td style="padding: 6px 10px; text-align: right; font-weight: bold; font-size: 10px;">
                                                                         <t t-esc="'{:,.2f}'.format(line['line_total'])"/>
                                                                     </td>
+                                                                    <td style="padding: 6px 10px; text-align: right; font-weight: bold; font-size: 10px;">
+                                                                        <t t-esc="'{:,.2f}'.format(line['line_total_with_tax'])"/>
+                                                                    </td>
                                                                 </tr>
                                                             </t>
                                                         </tbody>

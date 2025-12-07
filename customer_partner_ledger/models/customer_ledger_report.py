@@ -218,6 +218,7 @@ class CustomerLedgerReport(models.Model):
                 'discount': line.discount,
                 'discount_amount': discount_amount,
                 'line_total': line.price_subtotal
+                'line_total_with_tax': price_total
             })
         
         return line_details
