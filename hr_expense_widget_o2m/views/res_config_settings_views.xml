@@ -5,7 +5,7 @@
         <field name="priority" eval="85" />
         <field name="inherit_id" ref="hr_expense.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='expenses_setting_container']" position="inside">
+            <xpath expr="//sheet" position="inside">
                 <div
                     class="col-12 col-lg-6 o_setting_box"
                     id="expense_widget_o2m_settings"
