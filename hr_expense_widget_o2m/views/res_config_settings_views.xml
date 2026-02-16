@@ -5,7 +5,7 @@
         <field name="priority" eval="85" />
         <field name="inherit_id" ref="hr_expense.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('settings')]" position="inside">
+            <xpath expr="//sheet" position="inside">
                 <div class="app_settings_block" data-string="Expenses" string="Expenses" data-key="hr_expense">
                     <h2>Extra Expense Settings</h2>
                     <div class="row mt16 o_settings_container" id="expense_widget_o2m_settings">
